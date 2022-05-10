@@ -20,6 +20,7 @@ int main(){
   vector<int> neighbors;
 
   // initialzie k_1, k_2
+  // diagonal matrix entries are zero
 
   int v_r = 0;
   int v_t = 1;
@@ -116,7 +117,7 @@ int main(){
 
 }
 
-void handle_neighbor(vector<int> neighbors, int* fire){
+void handle_neighbor(vector<int> neighbors, int* fire, int* current){
   // add the interaction to neighbors, check if they spike, check their neighbors
   for (int i = index; i < neighbors.size(); i++){
     current[neighbors[i]] = current[neighbors[i]] + 1 * s/num;
@@ -127,8 +128,27 @@ void handle_neighbor(vector<int> neighbors, int* fire){
 
     for (j = 0; j < num; j++){
       if (matrix[j][i] == 1){
+        // check j i entry if it spikes directly
+        // current[j] = current[j] + 1 * s/num;
+        // if (current[j] >= v_t && fire[j] == 0){
+        //   current[j] = v_r;
+        //   fire[i] = 1;
+        // }
         neighbors.push_back(j);
       }
     }
   }
 }
+
+// time      neuron #
+// .1        2
+// .1        5
+// .3        6
+
+// more sparse, more random spiking
+// less sparse, more synchrony between neurons
+// consider writing each neuron as a object, object-oriented programming
+// fp (p = external input) f v.s. firing rate: a linear graph
+// same A matrix, initial voltages, p, only f varies
+// 
+
