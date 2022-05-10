@@ -19,6 +19,8 @@ int main(){
   double end[num]; // the ending voltage of each neuron after each time step
   vector<int> neighbors;
 
+  // initialzie k_1, k_2
+
   int v_r = 0;
   int v_t = 1;
   int n = 10^4;
@@ -58,6 +60,7 @@ int main(){
   }
 
   for (i = 0; i < num, i++){
+    // image
     // randonly assign values between .8 and 1.2
     current[i] = (rand() % (120000 - 80000)) / 10000.0;;
   }
@@ -81,10 +84,15 @@ int main(){
           a_sum ++; // unsure whether plus 1 or plus voltage
         }
       }
+      // diff_1 = - voltage
+      // k_1 = - diff_1 + image
+      // diff_2 = - (voltage + k1)
+      // k_2 = - diff_2 + image
 
-      // calculate current voltage
-      current[i] = v_r - current[i] + f * bp_sum + s/num * a_sum;
-      // what is num? 1000? the number of sensory-neuron connections?
+      // calculate dV_i/dt of this step
+      k_1[i] = v_r - current[i] + f * bp_sum + s/num * a_sum;
+      // calculate y + k_1 to get k_2
+
 
       if (current[i] >= v_t && fire[i] == 0) {
         current[i] = v_r;
@@ -94,8 +102,8 @@ int main(){
             neighbors.push_back(j);
           }
         }
-        handle_neighbor(neighbors, index);
       }
+      handle_neighbor(neighbors);
     }
     // end of each iteration
 
@@ -108,9 +116,9 @@ int main(){
 
 }
 
-int handle_neighbor(vector<int> neighbors, int index){
+void handle_neighbor(vector<int> neighbors, int* fire){
   // add the interaction to neighbors, check if they spike, check their neighbors
-  for (i = index; i < neighbors.size(); i++){
+  for (int i = index; i < neighbors.size(); i++){
     current[neighbors[i]] = current[neighbors[i]] + 1 * s/num;
     if (current[neighbors[i]] >= v_t && fire[i] == 0){
       current[i] = v_r;
@@ -121,10 +129,6 @@ int handle_neighbor(vector<int> neighbors, int index){
       if (matrix[j][i] == 1){
         neighbors.push_back(j);
       }
-    }
-    index ++;
-    if (neighbors.size() != 0){
-      handle_neighbor(neighbors, index);
     }
   }
 }
